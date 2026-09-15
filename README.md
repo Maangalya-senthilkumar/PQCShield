@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Project Title:
 Timing Side-Channel Leakage Detection and Mitigation Framework for ML-KEM (CRYSTALS-Kyber) using Raspberry Pi.
 
@@ -137,3 +138,39 @@ Build a Flask dashboard showing:
 - modular architecture
 - production-quality folder structure.
 Generate the implementation one module at a time, starting with requirements.txt and config.py, then continue sequentially through the project.
+
+# ML-KEM Timing Side-Channel Framework working
+
+Software-only implementation for measuring ML-KEM operation timing, detecting statistically significant leakage, localizing suspicious functions, and evaluating a replaceable constant-time mitigation. The collector uses `time.perf_counter_ns()` and the liboqs adapter is isolated in `collector/benchmark.py` for later Raspberry Pi deployment.
+
+## Setup
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+`liboqs-python` requires the Open Quantum Safe native library in the target environment. The Python code does not contain Raspberry Pi-specific assumptions.
+
+## Run the software demonstration
+
+```powershell
+python run_experiment.py --mode software --samples 10000
+python app.py
+```
+
+Open `http://127.0.0.1:5000/`. The dashboard starts empty; trigger `POST /api/run` to collect a fresh before/after validation run. Outputs are written to `data/` and `reports/`.
+
+## Run ML-KEM timings
+
+```powershell
+python run_experiment.py --mode kem --algorithm ML-KEM-768 --samples 10000
+```
+
+This records key generation, encapsulation, and decapsulation traces. Actual cryptographic leakage conclusions require controlled hardware, repeated runs, and appropriate environmental controls; Python-level timing is an experimental software baseline.
+
+## Complete beginner run guide
+
+For the full Windows/PowerShell procedure, dashboard steps, generated-file explanation, ML-KEM prerequisites, and common errors, see [docs/how_to_run.md](docs/how_to_run.md).
+>>>>>>> 4a3ec9b (initial commit for sse demo)

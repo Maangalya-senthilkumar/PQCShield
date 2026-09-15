@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ML-KEM Timing Leakage</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; color: #17202a; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+    .metric { border: 1px solid #d5d8dc; border-radius: 8px; padding: 1rem; }
+    .metric strong { display: block; font-size: 1.5rem; margin-top: .4rem; }
+    .chart { min-height: 420px; margin-top: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border-bottom: 1px solid #e5e7e9; padding: .65rem; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>ML-KEM Timing Leakage</h1>
+  <section class="metrics">
+    <div class="metric">Leakage score<strong>{{ "%.3f"|format(report.analysis.leakage_score) }}</strong></div>
+    <div class="metric">Welch t-score<strong>{{ "%.3f"|format(report.analysis.t_score) }}</strong></div>
+    <div class="metric">Overhead<strong>{{ "%.2f"|format(report.overhead_percent) }}%</strong></div>
+    <div class="metric">Status<strong>{{ "LEAKAGE" if report.analysis.significant else "BELOW THRESHOLD" }}</strong></div>
+  </section>
+  <div id="histogram" class="chart"></div>
+  <div id="boxplot" class="chart"></div>
+  <h2>Localization ranking</h2>
+  <table><thead><tr><th>Function</th><th>Average (ns)</th><th>Variance</th><th>Leakage score</th></tr></thead>
+  <tbody>{% for row in ranking %}<tr><td>{{ row.function_name }}</td><td>{{ "%.2f"|format(row.average_execution_time_ns) }}</td><td>{{ "%.2f"|format(row.variance_ns2) }}</td><td>{{ "%.3f"|format(row.leakage_score) }}</td></tr>{% endfor %}</tbody></table>
+  <script>
+    Plotly.newPlot('histogram', {{ histogram|safe }});
+    Plotly.newPlot('boxplot', {{ boxplot|safe }});
+  </script>
+</body>
+</html>
